@@ -1,0 +1,29 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: vsts-agent
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: vsts-agent
+        version: "0.1"
+    spec:
+      containers:
+      - name: vsts-agent
+        image: microsoft/vsts-agent:latest
+        env:
+          - name: VSTS_ACCOUNT
+            value: <DEVOPS_ORG>
+          - name: VSTS_TOKEN
+            value: <PAT>
+          - name: VSTS_POOL
+            value: dockerized-agent
+        volumeMounts:
+        - mountPath: /var/run/docker.sock
+          name: docker-volume
+      volumes:
+      - name: docker-volume
+        hostPath:
+          path: /var/run/docker.sock
